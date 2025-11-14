@@ -15,7 +15,7 @@ export async function update_category_table(): Promise<void> {
 
     await outgoingSourceDB.manager.transaction( async (transactionManager) => {
         for (const category of categories) {
-            await add_update_actor(category, transactionManager);
+            await add_update_category(category, transactionManager);
         }
         //update the entry in sync table
         const sync_row_updated = await update_table_record('category', transactionManager);
@@ -23,7 +23,7 @@ export async function update_category_table(): Promise<void> {
     })
 }
 
-export async  function add_update_actor(row: any, manager: any): Promise<void> {
+export async  function add_update_category(row: any, manager: any): Promise<void> {
     const category_record: dim_category =  await manager.getRepository('dim_category').findOneBy({actor_id: row['category_id']});
     if(category_record){
         if(!compareRecordField(category_record.name, row['name']))

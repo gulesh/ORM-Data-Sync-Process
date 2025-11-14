@@ -15,15 +15,15 @@ export async function update_customer_table(): Promise<void> {
 
     await outgoingSourceDB.manager.transaction( async (transactionManager) => {
         for (const customer of customers) {
-            //await add_update_actor(customer, transactionManager);
+            await add_update_customer(customer, transactionManager);
         }
         //update the entry in sync table
-        //const sync_row_updated = await update_table_record('customer', transactionManager);
-        //console.log("sync_row", sync_row_updated);
+        const sync_row_updated = await update_table_record('customer', transactionManager);
+        console.log("sync_row", sync_row_updated);
     })
 }
 
-export async  function add_update_actor(row: any, manager: any): Promise<void> {
+export async  function add_update_customer(row: any, manager: any): Promise<void> {
     const customer_record: dim_customer =  await manager.getRepository('dim_customer').findOneBy({actor_id: row['category_id']});
     if(customer_record){
         if(!compareRecordField(customer_record.first_name, row['first_name']))
