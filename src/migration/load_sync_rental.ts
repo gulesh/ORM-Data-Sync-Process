@@ -8,12 +8,16 @@ export async function sync_rental_table(): Promise<void> {
     const rentals  = await getAllRepositoryDataMySql('rental');
     await outgoingSourceDB.manager.transaction( async (transactionManager) => {
         for (const rental of rentals) {
-            await rental_sync_with_sqlite(rental, transactionManager);
+            if(rental.rental_id)
+            {
+                await rental_sync_with_sqlite(rental, transactionManager);
+            }
         }
     })
 }
 
 export async  function rental_sync_with_sqlite(row: any, manager: any): Promise<void> {
+    console.log(row);
     const fact_rental_instance = new fact_rental();
     fact_rental_instance.rental_id = row['rental_id'];
     fact_rental_instance.staff_id = row['staff_id'];
@@ -29,18 +33,17 @@ export async  function rental_sync_with_sqlite(row: any, manager: any): Promise<
     fact_rental_instance.store_key = storeDim_Object[0]['store_key'];
     let rental_date = new Date(row['rental_date']);
     //create dim_date for return and rented
+    fact_rental_instance.date_key_rented = null;
+    fact_rental_instance.date_key_return = null;
+    fact_rental_instance.rental_duration_days = null;
     const dim_date_key_rented = await add_dim_date( rental_date, manager);
-    console.log("rented date");
-    console.log(dim_date_key_rented);
+    fact_rental_instance.date_key_rented = dim_date_key_rented?.date_key;
     let return_date = row['return_date'] ? new Date(row['return_date']) : null;
     let dim_date_key_returned = null;
     if (return_date) {
         dim_date_key_returned = await add_dim_date( return_date, manager);
+        fact_rental_instance.date_key_rented = dim_date_key_returned?.date_key;
         fact_rental_instance.rental_duration_days = dim_date_key_returned.date_key - dim_date_key_rented.date_key;
     }
-    fact_rental_instance.date_key_rented = dim_date_key_rented?.date_key;
-    fact_rental_instance.date_key_return = dim_date_key_returned?.date_key;
-
-    console.log(fact_rental_instance);
     await outgoingSourceDB.manager.getRepository('fact_rental').save(fact_rental_instance);
 }

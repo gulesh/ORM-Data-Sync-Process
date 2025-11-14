@@ -6,9 +6,9 @@ export class fact_rental {
     rental_id: number;
     @PrimaryGeneratedColumn()
     fact_rental_key:number;
-    @Column()
+    @Column({nullable: true})
     date_key_return: number;
-    @Column()
+    @Column({nullable: true})
     date_key_rented: number;
     @Column()
     film_key: number;
@@ -18,6 +18,6 @@ export class fact_rental {
     customer_key: number;
     @Column()
     staff_id: number;
-    @Column()
+    @Column({nullable: true})
     rental_duration_days: number;
 }

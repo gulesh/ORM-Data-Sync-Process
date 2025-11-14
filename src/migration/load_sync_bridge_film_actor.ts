@@ -19,5 +19,5 @@ export async  function bridge_film_actor_sync_with_sqlite(row: any, manager: any
     bridge_film_actor_instance.film_key = film_Dim_Object[0]['film_key'];
     let actor_Dim_Object = await manager.getRepository('dim_actor').findBy({actor_id: row['actor_id']});
     bridge_film_actor_instance.actor_key = actor_Dim_Object[0]['actor_key'];
-    await outgoingSourceDB.manager.getRepository('fact_rental').save(bridge_film_actor_instance);
+    await outgoingSourceDB.manager.getRepository('bridge_film_actor').save(bridge_film_actor_instance);
 }
