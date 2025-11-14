@@ -1,5 +1,6 @@
 import {sync_table} from "../entity/sync_table";
-import {outgoingSourceDB} from "../data-source";
+import {update_actor_table} from "./sync_actor";
+import {update_category_table} from "./sync_category";
 
 const tables = [
     "film",
@@ -20,15 +21,13 @@ const tables = [
 ];
 
 export async function sync_job(){
+    console.log("sync job Starting...");
 
-    //for each table get the last sync date
-    for(const table in tables){
-        //const sync_table_record = await table_record_in_sync(table);
-        //get the last_sync date from sqlite table
-        //get all the record which were updated later than the date
-        // find the corresponding table in sqlite and update the record
-    }
-    //check if the sync date is same as that in sync_table if not add the sync_date
+    //await update_actor_table();
+    console.log("synced actor table!");
+
+    await update_category_table();
+    console.log("synced category table!");
 
 }
 
@@ -41,5 +40,12 @@ export async function add_table_record(tableName: string, manager:any){
         sync_table_instance.last_sync_time = new Date(Date.now());
         sync_table_record = await manager.getRepository('sync_table').save(sync_table_instance);
     }
+    return sync_table_record;
+}
+
+export async function update_table_record(tableName: string, manager:any){
+    let sync_table_record: sync_table = await manager.getRepository('sync_table').findOneBy({ table_name: tableName })
+    sync_table_record.last_sync_time = new Date(Date.now());
+    sync_table_record = await manager.getRepository('sync_table').save(sync_table_record);
     return sync_table_record;
 }
