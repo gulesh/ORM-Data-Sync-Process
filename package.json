@@ -16,6 +16,10 @@
    },
    "scripts": {
       "start": "ts-node src/index.ts",
+      "build" : "tsc",
       "typeorm": "typeorm-ts-node-commonjs"
-   }
+   },
+  "bin": {
+    "orm-cli": "build/cli.js"
+  }
 }
