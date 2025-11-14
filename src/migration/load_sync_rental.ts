@@ -50,8 +50,4 @@ export async  function rental_sync_with_sqlite(row: any, manager: any): Promise<
         fact_rental_instance.rental_duration_days = dim_date_key_returned.date_key - dim_date_key_rented.date_key;
     }
     await outgoingSourceDB.manager.getRepository('fact_rental').save(fact_rental_instance);
-
-    //add an entry to the sync_table
-    const sync_row = await add_table_record('inventory', manager);
-    console.log("sync_row", sync_row);
 }
