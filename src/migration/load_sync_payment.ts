@@ -1,12 +1,12 @@
 
-import {getAllRepositoryDataMySql, getOneRecordForMySqlRepo} from "./repository_data";
+import {getAllRepositoryDataMySql} from "./repository_data";
 import {incomingSourceDB, outgoingSourceDB} from "../data-source";
 import {add_dim_date} from "../add_dim_date"
 import {fact_payment} from "../entity/fact_payment";
 import {add_table_record} from "../job/sync_job";
 
 export async function sync_payment_table(): Promise<void> {
-    const payments  = await getOneRecordForMySqlRepo('payment');
+    const payments  = await getAllRepositoryDataMySql('payment');
     await outgoingSourceDB.manager.transaction( async (transactionManager) => {
         for (const payment of payments) {
             await payment_sync_with_sqlite(payment, transactionManager);
@@ -35,10 +35,5 @@ export async  function payment_sync_with_sqlite(row: any, manager: any): Promise
 
     fact_payment_instance.date_key_paid = dim_date_key?.date_key;
     await outgoingSourceDB.manager.getRepository('fact_payment').save(fact_payment_instance);
-
-    //add an entry to the sync_table
-    const sync_row = await add_table_record('staff', manager);
-    console.log("sync_row", sync_row);
-
 
 }

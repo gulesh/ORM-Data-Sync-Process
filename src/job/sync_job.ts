@@ -3,6 +3,8 @@ import {update_actor_table} from "./sync_actor";
 import {update_category_table} from "./sync_category";
 import {update_customer_table} from "./sync_customer";
 import {update_film_table} from "./sync_film";
+import {update_store_table} from "./sync_store";
+import {update_payment_table} from "./sync_payment";
 
 const tables = [
     "film",
@@ -37,8 +39,11 @@ export async function sync_job(){
     // await update_film_table();
     // console.log("synced film table!");
 
-    // await update_film_table();
-    // console.log("synced film table!");
+    // await update_store_table();
+    // console.log("synced store table!");
+
+    // await update_payment_table();
+    // console.log("synced store table!");
 
 }
 
