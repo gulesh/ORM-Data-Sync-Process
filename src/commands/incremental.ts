@@ -2,13 +2,11 @@
 import {sync_job} from "../job/sync_job";
 
 export  const incremental = async () : Promise<boolean> => {
-    let result = false;
-    sync_job().then(async () => {
-        console.log("sync successful!")
-        result = true;
-    }).catch((e: Error) => {
-        console.log('error:', e);
-    })
-
-    return result;
+    try {
+        await sync_job(); // Wait for completion
+        return true; // Success
+    } catch (e) {
+        console.error('Error syncing databases:', e);
+        return false; // Failure
+    }
 }

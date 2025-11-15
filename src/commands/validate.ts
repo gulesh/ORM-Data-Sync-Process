@@ -1,12 +1,11 @@
 import {validation_job} from "../job/validation_job";
 
 export  const validate = async () : Promise<boolean> => {
-    let result = false;
-    validation_job().then(async () => {
-        result = true;
-    }).catch((e: Error) => {
-        console.log('error:', e);
-    })
-
-    return result;
+    try {
+        await validation_job(); // Wait for completion
+        return true; // Success
+    } catch (e) {
+        console.error('Error validating records:', e);
+        return false; // Failure
+    }
 }

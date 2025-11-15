@@ -6,6 +6,9 @@ import {full_load_command} from "./commands/full-load";
 import {incremental} from "./commands/incremental";
 import {validate} from "./commands/validate";
 
+let init_status = false;
+let full_load_status = false;
+
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -16,20 +19,16 @@ console.log("CLI ready. Type exit to quit.")
 rl.prompt();
 
 
-rl.on("line", (line) => {
+rl.on("line", async (line) => {
     const args = line.trim().split(" ");
     const command = args[0];
-    let init_status = false;
-    let full_load_status = false;
 
     switch (command) {
         case "init":
             try {
-                if(init_status){
-                    initCommand().then((result)=> {
-                        init_status = result;
-                        console.log(`init successful: ${result}`);
-                    });
+                if(!init_status){
+                    init_status = await initCommand();
+                    console.log(`init successful: ${init_status}`);
                 } else
                 {
                     console.log(`database already initialized`);
@@ -45,10 +44,9 @@ rl.on("line", (line) => {
                     if(!full_load_status)
                     {
                         console.log("Initializing full load...");
-                        full_load_command().then((result)=> {
-                            full_load_status = result;
-                            console.log(`full load successful: ${result}`);
-                        })
+                       const full_load_status =  await full_load_command();
+                       console.log(`full load successful: ${full_load_status}`);
+
                     }
                 } else
                 {
@@ -62,9 +60,8 @@ rl.on("line", (line) => {
             try{
                 if(init_status){
                     console.log("Initializing sync...");
-                    incremental().then((result)=> {
-                        console.log(`sync successful: ${result}`);
-                    })
+                    const status = await incremental();;
+                    console.log(`sync successful: ${status}`);
                 } else
                 {
                     console.log("run command \'init\' first!");
@@ -77,9 +74,8 @@ rl.on("line", (line) => {
             try{
                 if(init_status){
                     console.log("validating data...");
-                    validate().then((result)=> {
-                        console.log(`validation successful: ${result}`);
-                    })
+                    const status = await validate();
+                    console.log(`validation successful: ${status}`);
                 } else
                 {
                     console.log("run command \'init\' first!");
