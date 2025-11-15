@@ -1,7 +1,8 @@
 import { incomingSourceDB, outgoingSourceDB } from "./data-source"
-import {initial_full_load} from "./migration/initial_full_load";
-import {sync_job} from "./job/sync_job";
-import {validation_job} from "./job/validation_job";
+import {initCommand} from "./commands/init";
+import {full_load_command} from "./commands/full-load";
+import {validate} from "./commands/validate";
+import {incremental} from "./commands/incremental";
 
 
 async function initializeDatabases() {
@@ -11,14 +12,43 @@ async function initializeDatabases() {
     console.log("Database initialized!")
 }
 
-initializeDatabases().then(r =>
-{
-    initial_full_load().then( () => {console.log('initial load successful...!!!')});
-    sync_job().then(()=> {
-        console.log("sync run!")
-    });
-    validation_job().then(()=> {console.log('validation job...!!!')});
-}).catch(error => console.log(error));
+
+async function run() {
+    const init_run = await initCommand();
+    if(init_run) {
+        console.log("data sources initialized successfully");
+    } else
+    {
+        console.log("data sources could not be initialized.");
+    }
+    const full_load_run = await full_load_command();
+    if(full_load_run) {
+        console.log("full load successful.");
+    } else
+    {
+        console.log("full load unsuccessful.");
+    }
+    const validate_run = await validate();
+    if(validate_run) {
+        console.log("validate run successful.");
+    } else
+    {
+        console.log("validate run unsuccessful.");
+    }
+
+    const incremental_run = await incremental();
+    if(incremental_run) {
+        console.log("sync run successful.");
+    } else
+    {
+        console.log("sync run unsuccessful.");
+    }
+
+}
+
+run().then(() => {
+    console.log("run done!");
+})
 
 
 

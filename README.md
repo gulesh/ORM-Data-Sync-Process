@@ -1,8 +1,8 @@
 # Project Setup
 
 1. Start by cloning the Git repository.
-2. Run `npm i` command inside the root directory.
-3. Setup database settings inside `data-source.ts` file:
+2. Run `npm i` command inside the root directory(ORM-Data-Sync-Process).
+3. add .env file with following details. Put .env file in the root directory
     - USERNAME = root
     - PASSWORD = <password>
     - HOST = localhost
@@ -13,20 +13,16 @@
 
 # Using the CLI:
 
-1. Run this command in terminal: `npm run build`
-
-2. Next, make `cli.js` inside `build` executable using:  
+1. Run `npm i` command the root directory.
+2. Run this command in terminal: `npm run build`
+3. Next, make `cli.js` inside `build` executable using:  
    `chmod +x build/cli.js`
-
-3. Register CLI globally using:  
+4. Register CLI globally using:  
    `npm link`
-
-4. Check if the registration was successful with:  
+5. Check if the registration was successful with:  
    `which orm-cli`
-
-5. Type `orm-cli` and hit enter to run the CLI
-
-6. Now, you have access to the following commands:
+6. Type `orm-cli` and hit enter to run the CLI
+7. Now, you have access to the following commands:
     1. `init`
     2. `full-load`
     3. `incremental`
